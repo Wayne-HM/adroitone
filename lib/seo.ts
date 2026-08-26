@@ -1,6 +1,13 @@
 import type { Metadata } from "next";
 
-const rawUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "https://adroitoneconsult.co";
+const getSiteUrl = () => {
+  if (process.env.NEXT_PUBLIC_SITE_URL) return process.env.NEXT_PUBLIC_SITE_URL;
+  if (process.env.VERCEL_PROJECT_PRODUCTION_URL) return `https://${process.env.VERCEL_PROJECT_PRODUCTION_URL}`;
+  if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`;
+  return "https://adroitoneconsult.co";
+};
+
+const rawUrl = getSiteUrl();
 export const siteUrl = rawUrl.replace(/\/$/, "");
 
 export const siteConfig = {
