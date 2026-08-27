@@ -11,14 +11,14 @@ const rawUrl = getSiteUrl();
 export const siteUrl = rawUrl.replace(/\/$/, "");
 
 export const siteConfig = {
-  name: "AdroitOne",
+  name: "Adroitone Consulting",
   indiaEntity: "Adroitone Consulting Pvt Ltd",
   usEntity: "AdroitOne Inc.",
   tagline: "Technology · Talent · AI",
   positioning: "People × Technology × AI",
-  title: "AdroitOne — Technology, Talent & AI, Hyderabad, India",
+  title: "Adroitone Consulting — Technology, Talent & AI, Hyderabad, India",
   description:
-    "AdroitOne (Adroitone Consulting Pvt Ltd) helps businesses build stronger technology teams, modern software and practical AI solutions — from Hyderabad, India, with international reach through AdroitOne Inc., New York.",
+    "Adroitone Consulting Pvt Ltd helps businesses build stronger technology teams, modern software and practical AI solutions — from Hyderabad, India, with international reach through AdroitOne Inc., New York.",
 };
 
 type PageMeta = {
