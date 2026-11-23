@@ -54,6 +54,14 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
     fetchEmployee();
   }, [fetchEmployee]);
 
+  useEffect(() => {
+    if (!loading && !employee) {
+      fetch("/api/auth/logout", { method: "POST" }).finally(() => {
+        router.replace("/employee/login");
+      });
+    }
+  }, [loading, employee, router]);
+
   const handleLogout = async () => {
     try {
       await fetch("/api/auth/logout", { method: "POST" });
@@ -116,7 +124,20 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
   }
 
   if (!employee) {
-    return null; // middleware redirects unauthenticated to /employee/login
+    return (
+      <div className="flex min-h-screen flex-col items-center justify-center bg-ink-950 p-6 text-center">
+        <div className="mx-auto max-w-sm rounded-2xl border border-white/[0.08] bg-white/[0.03] p-8 text-center">
+          <p className="text-white/80 font-medium mb-2">Session expired or invalid</p>
+          <p className="text-white/50 text-sm mb-6">Redirecting to employee login…</p>
+          <Link
+            href="/employee/login"
+            className="inline-flex rounded-full bg-white text-ink-950 font-medium px-6 py-2.5 text-sm hover:bg-[#e9edff]"
+          >
+            Go to Login
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   return (

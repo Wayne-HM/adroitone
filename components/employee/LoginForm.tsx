@@ -2,7 +2,6 @@
 
 import { useState, useCallback } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/navigation/Logo";
 import { Icon } from "@/components/ui/Icon";
@@ -15,7 +14,6 @@ import { Icon } from "@/components/ui/Icon";
  * callbackUrl supplied in the query string).
  */
 export function LoginForm({ callbackUrl }: { callbackUrl?: string | null }) {
-  const router = useRouter();
   const [mode, setMode] = useState<"login" | "forgot">("login");
   const [resetSent, setResetSent] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
@@ -52,7 +50,7 @@ export function LoginForm({ callbackUrl }: { callbackUrl?: string | null }) {
         return;
       }
       const destination = callbackUrl || "/employee/dashboard";
-      router.push(destination);
+      window.location.href = destination;
     } catch {
       setError("Unable to reach the server. Please try again shortly.");
     } finally {

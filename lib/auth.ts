@@ -36,9 +36,9 @@ export function getEmployeeById(employeeId: string): EmployeeRow | null {
       `SELECT id, employee_id, email, name, designation, department,
               joining_date, contact_phone, reporting_manager_id, status,
               is_demo, created_at
-       FROM employees WHERE id = ?`
+       FROM employees WHERE id = ? OR employee_id = ?`
     )
-    .get(employeeId) as EmployeeRow | undefined;
+    .get(employeeId, employeeId) as EmployeeRow | undefined;
   return row ?? null;
 }
 

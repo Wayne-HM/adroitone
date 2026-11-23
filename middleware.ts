@@ -35,10 +35,8 @@ export async function middleware(request: NextRequest) {
   const isAuthenticated = !!token && !!(await verifySessionTokenAsync(token));
   const isLoginRoute = PUBLIC_EMPLOYEE_ROUTES.includes(pathname);
 
+  // Allow direct access to login page so users can sign in or re-authenticate
   if (isLoginRoute) {
-    if (isAuthenticated) {
-      return NextResponse.redirect(new URL("/employee/dashboard", request.url));
-    }
     return NextResponse.next();
   }
 
