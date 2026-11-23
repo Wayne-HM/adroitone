@@ -46,7 +46,7 @@ function generateAttendanceRecords(employeeId: string) {
     ["2026-09-08", "2026-09-12"],
     ["2026-09-15", "2026-10-10"],
     ["2026-10-21", "2026-11-07"],
-    ["2026-11-10", "2026-11-24"],
+    ["2026-11-10", "2026-11-23"],
   ];
 
   const absentDays = new Set([
@@ -188,12 +188,7 @@ export function initDb(): void {
       total_hours = 7.01,
       status = 'present'
     WHERE date = '2026-11-23';
-    UPDATE attendance SET
-      check_in = '2026-11-24T09:57:12+05:30',
-      check_out = '2026-11-24T17:02:48+05:30',
-      total_hours = 7.09,
-      status = 'present'
-    WHERE date = '2026-11-24';
+    DELETE FROM attendance WHERE date >= '2026-11-24';
   `);
 
   // 3. Seed accounts if missing
