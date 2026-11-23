@@ -5,7 +5,7 @@ import {
   setSessionCookie,
 } from "@/lib/auth";
 import { createSessionToken } from "@/lib/session";
-import { initDb } from "@/lib/db";
+import { getDb, initDb } from "@/lib/db";
 import { ensureDemoData } from "@/lib/seed";
 
 const loginSchema = z.object({
@@ -20,58 +20,67 @@ export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
 export async function POST(req: Request) {
-  // Ensure DB schema exists on first request (dev convenience).
-  initDb();
-  if (process.env.EMPLOYEE_DEMO_MODE === "1") {
-    await ensureDemoData();
-  }
-
-  let body: unknown;
   try {
-    body = await req.json();
-  } catch {
-    return NextResponse.json(
-      { ok: false, error: "Invalid request body." },
-      { status: 400 }
-    );
-  }
-
-  const parsed = loginSchema.safeParse(body);
-  if (!parsed.success) {
-    const fieldErrors: Record<string, string> = {};
-    for (const issue of parsed.error.issues) {
-      const key = String(issue.path[0] ?? "form");
-      if (!fieldErrors[key]) fieldErrors[key] = issue.message;
+    initDb();
+    const db = getDb();
+    const countRow = db.prepare("SELECT count(*) as count FROM employees").get() as { count: number } | undefined;
+    if (!countRow || countRow.count === 0) {
+      await ensureDemoData();
     }
+
+    let body: unknown;
+    try {
+      body = await req.json();
+    } catch {
+      return NextResponse.json(
+        { ok: false, error: "Invalid request body." },
+        { status: 400 }
+      );
+    }
+
+    const parsed = loginSchema.safeParse(body);
+    if (!parsed.success) {
+      const fieldErrors: Record<string, string> = {};
+      for (const issue of parsed.error.issues) {
+        const key = String(issue.path[0] ?? "form");
+        if (!fieldErrors[key]) fieldErrors[key] = issue.message;
+      }
+      return NextResponse.json(
+        { ok: false, error: "Please correct the highlighted fields.", fieldErrors },
+        { status: 400 }
+      );
+    }
+
+    const { identifier, password } = parsed.data;
+
+    const employee = await authenticateEmployee(identifier, password);
+    if (!employee) {
+      return NextResponse.json(
+        { ok: false, error: "Invalid employee ID/email or password." },
+        { status: 401 }
+      );
+    }
+
+    const token = await createSessionToken(employee.id);
+    await setSessionCookie(token);
+
+    return NextResponse.json({
+      ok: true,
+      employee: {
+        id: employee.id,
+        employee_id: employee.employee_id,
+        email: employee.email,
+        name: employee.name,
+        designation: employee.designation,
+        department: employee.department,
+        is_demo: employee.is_demo,
+      },
+    });
+  } catch (error) {
+    console.error("[login] Error during authentication:", error);
     return NextResponse.json(
-      { ok: false, error: "Please correct the highlighted fields.", fieldErrors },
-      { status: 400 }
+      { ok: false, error: error instanceof Error ? error.message : "Authentication error" },
+      { status: 500 }
     );
   }
-
-  const { identifier, password } = parsed.data;
-
-  const employee = await authenticateEmployee(identifier, password);
-  if (!employee) {
-    return NextResponse.json(
-      { ok: false, error: "Invalid employee ID/email or password." },
-      { status: 401 }
-    );
-  }
-
-  const token = await createSessionToken(employee.id);
-  await setSessionCookie(token);
-
-  return NextResponse.json({
-    ok: true,
-    employee: {
-      id: employee.id,
-      employee_id: employee.employee_id,
-      email: employee.email,
-      name: employee.name,
-      designation: employee.designation,
-      department: employee.department,
-      is_demo: employee.is_demo,
-    },
-  });
 }

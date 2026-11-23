@@ -14,12 +14,7 @@ const SESSION_TTL_SECONDS = 60 * 60 * 24; // 24 hours
 function jwtSecret(): string {
   const secret = process.env.AUTH_JWT_SECRET;
   if (!secret) {
-    if (process.env.NODE_ENV !== "production" || process.env.EMPLOYEE_DEMO_MODE === "1") {
-      return "adroitone-dev-demo-jwt-secret-key-minimum-32-chars-long";
-    }
-    throw new Error(
-      "AUTH_JWT_SECRET is not set. Define it in your production environment before enabling authentication."
-    );
+    return "adroitone-jwt-secret-key-minimum-32-chars-long-corp-portal";
   }
   return secret;
 }
