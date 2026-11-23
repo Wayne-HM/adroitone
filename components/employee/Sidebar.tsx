@@ -6,7 +6,6 @@ import { motion } from "framer-motion";
 import { cn } from "@/lib/utils";
 import { Logo } from "@/components/navigation/Logo";
 import { Icon } from "@/components/ui/Icon";
-import { DemoLabel } from "./StatusBadge";
 
 type NavItem = {
   label: string;
@@ -52,9 +51,7 @@ export function Sidebar({ onLogout, className }: SidebarProps) {
       )}
     >
       <div className="flex h-16 items-center justify-between px-6">
-        <Link href="/employee/dashboard" className="inline-flex shrink-0 items-center">
-          <Logo size={30} />
-        </Link>
+        <Logo size={30} href="/employee/dashboard" />
       </div>
 
       <ul className="flex-1 px-4 py-6 space-y-1 list-none">
@@ -98,8 +95,10 @@ export function Sidebar({ onLogout, className }: SidebarProps) {
         </motion.li>
       </ul>
 
-      <div className="p-6 border-t border-white/[0.06]">
-        <DemoLabel className="w-full text-center" />
+      <div className="p-5 border-t border-white/[0.06]">
+        <p className="text-[0.7rem] text-white/30 text-center">
+          Adroitone Consulting Pvt Ltd
+        </p>
       </div>
     </nav>
   );

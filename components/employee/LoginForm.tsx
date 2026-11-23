@@ -93,9 +93,7 @@ export function LoginForm({ callbackUrl }: { callbackUrl?: string | null }) {
       <div className="relative z-10 w-full max-w-md px-6">
         <div className="mx-auto glass-deep rounded-3xl border border-white/[0.08] p-10 md:p-14 shadow-2xl">
           <div className="text-center mb-10">
-            <Link href="/" className="inline-block mb-4">
-              <Logo size={36} priority />
-            </Link>
+            <Logo size={36} priority href="/" className="mb-4" />
             <p className="eyebrow mb-3">Adroitone Consulting · Employee Portal</p>
             <h2 className="display-md tracking-tight">
               {mode === "login" ? "Welcome back" : "Reset your password"}
@@ -137,7 +135,7 @@ export function LoginForm({ callbackUrl }: { callbackUrl?: string | null }) {
                       "field pl-10 pr-4",
                       fieldErrors.identifier && "field-error"
                     )}
-                    placeholder="EMP-1001 or name@demo.adroitoneconsult.in"
+                    placeholder="AD-0176 or name@adroitoneconsult.in"
                     disabled={loading}
                   />
                 </div>
@@ -212,8 +210,7 @@ export function LoginForm({ callbackUrl }: { callbackUrl?: string | null }) {
 
               <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-3 text-xs text-white/60">
                 <div className="flex items-center justify-between mb-2">
-                  <span className="font-medium text-white/80">Employee Access</span>
-                  <span className="text-[0.65rem] px-2 py-0.5 rounded-full bg-accent/20 text-accent font-medium">DEMO</span>
+                  <span className="font-medium text-white/80">Employee Quick Access</span>
                 </div>
                 <div className="space-y-2 font-mono text-[0.72rem] text-white/50">
                   <div className="flex items-center justify-between border-b border-white/[0.04] pb-1.5">
@@ -295,7 +292,7 @@ export function LoginForm({ callbackUrl }: { callbackUrl?: string | null }) {
                     If an account matches <span className="text-cyan font-mono">{identifier}</span>, password reset instructions have been dispatched.
                   </p>
                   <p className="text-white/40 text-[0.7rem] mt-2">
-                    In demo mode, please use the provided demo password: <span className="font-mono text-cyan">DemoPassword123!</span>
+                    Default temporary password: <span className="font-mono text-cyan">DemoPassword123!</span>
                   </p>
                 </div>
               ) : (
@@ -323,7 +320,7 @@ export function LoginForm({ callbackUrl }: { callbackUrl?: string | null }) {
                       value={identifier}
                       onChange={(e) => setIdentifier(e.target.value)}
                       className="field pl-10 pr-4"
-                      placeholder="name@demo.adroitoneconsult.in"
+                      placeholder="name@adroitoneconsult.in"
                       disabled={loading}
                     />
                   </div>

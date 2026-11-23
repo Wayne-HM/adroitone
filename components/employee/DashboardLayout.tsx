@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { motion, AnimatePresence } from "framer-motion";
 import { Sidebar } from "./Sidebar";
+import { Logo } from "@/components/navigation/Logo";
 
 /**
  * Shell for the AdroitOne employee dashboard.
@@ -75,12 +76,10 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
 
   const MobileHeader = () => (
     <header className="flex h-16 items-center justify-between border-b border-white/[0.06] bg-ink-900/60 backdrop-blur px-6 z-30 lg:hidden">
-      <Link href="/employee/dashboard" className="inline-flex items-center gap-2">
-        <span className="text-accent font-semibold tracking-tight">
-          ADROITONE
-        </span>
+      <div className="inline-flex items-center gap-2.5">
+        <Logo size={24} href="/employee/dashboard" />
         <span className="text-xs text-white/50">· Employee</span>
-      </Link>
+      </div>
       <div className="flex items-center gap-3">
         <button
           onClick={() => setMobileOpen(true)}
@@ -164,11 +163,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             className="fixed inset-0 z-[80] flex flex-col lg:hidden bg-ink-950/95 backdrop-blur-2xl"
           >
             <div className="flex h-16 items-center justify-between px-6 border-b border-white/[0.06]">
-              <Link href="/" className="inline-flex items-center gap-2">
-                <span className="text-accent font-semibold tracking-tight">
-                  ADROITONE
-                </span>
-              </Link>
+              <Logo size={28} href="/employee/dashboard" />
               <button
                 onClick={() => setMobileOpen(false)}
                 className="flex h-10 w-10 items-center justify-center rounded-full border border-white/[0.12] text-white hover:bg-white/5 transition-colors"
@@ -220,7 +215,7 @@ export function DashboardLayout({ children }: { children: React.ReactNode }) {
             </nav>
             <div className="mt-auto px-6 pb-10">
               <p className="text-xs text-center text-white/35">
-                Adroitone Consulting · DEMO portal
+                Adroitone Consulting Pvt Ltd
               </p>
             </div>
           </motion.div>

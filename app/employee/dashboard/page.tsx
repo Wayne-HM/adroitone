@@ -121,12 +121,6 @@ export default function OverviewPage() {
             <p className="text-accent font-medium text-sm tracking-wide">
               {employee.designation} · {employee.department}
             </p>
-            {employee.is_demo && (
-              <p className="mt-2 flex items-center gap-2 text-xs text-cyan">
-                <span className="h-1.5 w-1.5 rounded-full bg-cyan animate-pulse" aria-hidden />
-                DEMO account — fictional data
-              </p>
-            )}
           </div>
           <div className="flex flex-col items-end gap-2">
             <span className="text-xs font-medium text-white/40 uppercase tracking-wider">

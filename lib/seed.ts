@@ -15,7 +15,7 @@ const DEMO_PASSWORD = "DemoPassword123!";
 const EMPLOYEES = [
   {
     employee_id: "AD-0102",
-    email: "pm.ad0102@demo.adroitoneconsult.in",
+    email: "pm.ad0102@adroitoneconsult.in",
     name: "Project Manager",
     designation: "Project Manager",
     department: "SOFTWARE DEVELOPMENT",
@@ -26,7 +26,7 @@ const EMPLOYEES = [
   },
   {
     employee_id: "AD-0176",
-    email: "syedmurtaza.sd@demo.adroitoneconsult.in",
+    email: "syedmurtaza.sd@adroitoneconsult.in",
     name: "SYED MURTAZA",
     designation: "WEB DEVELOPER INTERN",
     department: "SOFTWARE DEVELOPMENT",
@@ -37,7 +37,7 @@ const EMPLOYEES = [
   },
   {
     employee_id: "AD-0178",
-    email: "mujtabaahmed.sd@demo.adroitoneconsult.in",
+    email: "mujtabaahmed.sd@adroitoneconsult.in",
     name: "MUJTABA AHMED",
     designation: "WEB DEVELOPER INTERN",
     department: "SOFTWARE DEVELOPMENT",
@@ -160,7 +160,7 @@ export async function ensureDemoData(): Promise<{
         created_at)
      VALUES (@id, @employee_id, @email, @name, @password_hash, @designation,
              @department, @joining_date, @contact_phone, @reporting_manager_id,
-             @status, 1, @created_at)
+             @status, 0, @created_at)
      ON CONFLICT(employee_id) DO UPDATE SET
        name = excluded.name,
        email = excluded.email,
@@ -168,7 +168,8 @@ export async function ensureDemoData(): Promise<{
        department = excluded.department,
        joining_date = excluded.joining_date,
        contact_phone = excluded.contact_phone,
-       reporting_manager_id = excluded.reporting_manager_id`
+       reporting_manager_id = excluded.reporting_manager_id,
+       is_demo = 0`
   );
 
   const now = new Date().toISOString();

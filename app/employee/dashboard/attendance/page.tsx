@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
-import { StatusBadge, DemoLabel } from "../../../../components/employee/StatusBadge";
+import { StatusBadge } from "../../../../components/employee/StatusBadge";
 
 type Attendance = {
   id: string;
@@ -103,8 +103,6 @@ export default function AttendancePage() {
 
   return (
     <div className="space-y-8">
-      <DemoLabel className="w-fit mb-2" />
-
       <div className="flex flex-col lg:flex-row gap-6">
         {/* Check-in / check-out card */}
         <div className="flex-1 glass rounded-3xl p-8 md:p-12">

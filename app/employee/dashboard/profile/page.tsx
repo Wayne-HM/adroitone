@@ -3,7 +3,7 @@
 import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import { StatusBadge, DemoLabel } from "../../../../components/employee/StatusBadge";
+import { StatusBadge } from "../../../../components/employee/StatusBadge";
 
 type Employee = {
   id: string;
@@ -96,8 +96,6 @@ export default function ProfilePage() {
 
   return (
     <div className="space-y-8">
-      <DemoLabel className="w-fit mb-2" />
-
       <div className="glass rounded-3xl p-8 md:p-12">
         <div className="flex flex-col lg:flex-row lg:items-start gap-8">
           <div className="flex-1">
@@ -149,13 +147,6 @@ export default function ProfilePage() {
                 })}
               />
             </div>
-
-            {employee.is_demo && (
-              <p className="mt-6 flex items-center gap-2 text-xs text-cyan">
-                <span className="h-1.5 w-1.5 rounded-full bg-cyan animate-pulse" aria-hidden />
-                DEMO account — fictional data
-              </p>
-            )}
           </div>
 
           <div className="w-full lg:w-96">
