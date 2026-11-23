@@ -25,7 +25,7 @@ export const dynamic = "force-dynamic";
 export async function GET(req: Request) {
   try {
     initDb();
-    const employee = await getCurrentEmployee();
+    const employee = await getCurrentEmployee(req);
     if (!employee) {
       return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
     }

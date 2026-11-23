@@ -1,22 +1,15 @@
 import { NextResponse } from "next/server";
-import { cookies } from "next/headers";
 import { getCurrentEmployee, toPublicEmployee } from "@/lib/auth";
 import { initDb } from "@/lib/db";
-import { verifySessionTokenAsync } from "@/lib/session";
 
 export const runtime = "nodejs";
 export const dynamic = "force-dynamic";
 
-export async function GET() {
+export async function GET(req: Request) {
   initDb();
-  const token = (await cookies()).get("adroitone_session")?.value;
-  const verifiedId = token ? await verifySessionTokenAsync(token) : null;
-  const employee = await getCurrentEmployee();
+  const employee = await getCurrentEmployee(req);
   if (!employee) {
-    return NextResponse.json(
-      { ok: false, error: "Unauthorized", hasToken: !!token, tokenLen: token?.length, verifiedId },
-      { status: 401 }
-    );
+    return NextResponse.json({ ok: false, error: "Unauthorized" }, { status: 401 });
   }
   return NextResponse.json({ ok: true, employee: toPublicEmployee(employee) });
 }

@@ -109,9 +109,27 @@ export async function authenticateEmployee(
 
 export type SessionEmployee = Omit<EmployeeRow, "password_hash">;
 
-/** Current authenticated employee from the request cookies, or null. */
-export async function getCurrentEmployee(): Promise<SessionEmployee | null> {
-  const token = (await cookies()).get(SESSION_COOKIE)?.value;
+/** Current authenticated employee from the request cookies or headers, or null. */
+export async function getCurrentEmployee(req?: Request): Promise<SessionEmployee | null> {
+  let token: string | undefined;
+  try {
+    token = (await cookies()).get(SESSION_COOKIE)?.value;
+  } catch {
+    // cookies() might fail outside request context
+  }
+
+  if (!token && req) {
+    const rawCookie = req.headers.get("cookie");
+    if (rawCookie) {
+      const match = rawCookie.match(new RegExp(`(?:^|;\\s*)${SESSION_COOKIE}=([^;]+)`));
+      if (match) token = match[1];
+    }
+    if (!token) {
+      const auth = req.headers.get("authorization");
+      if (auth?.startsWith("Bearer ")) token = auth.slice(7).trim();
+    }
+  }
+
   if (!token) return null;
   const employeeId = await verifySessionTokenAsync(token);
   if (!employeeId) return null;
@@ -120,8 +138,8 @@ export async function getCurrentEmployee(): Promise<SessionEmployee | null> {
 }
 
 /** Require a current employee. Throws if there is no valid session. */
-export async function requireEmployee(): Promise<SessionEmployee> {
-  const employee = await getCurrentEmployee();
+export async function requireEmployee(req?: Request): Promise<SessionEmployee> {
+  const employee = await getCurrentEmployee(req);
   if (!employee) {
     const err = new Error("Unauthorized");
     (err as Error & { status?: number }).status = 401;
