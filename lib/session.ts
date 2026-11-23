@@ -32,7 +32,8 @@ function base64urlEncode(data: Uint8Array | string): string {
 
 /** Base64url decode to Uint8Array. */
 function base64urlDecode(str: string): Uint8Array {
-  const padded = str.replace(/-/g, "+").replace(/_/g, "/");
+  const padLen = (4 - (str.length % 4)) % 4;
+  const padded = str.replace(/-/g, "+").replace(/_/g, "/") + "=".repeat(padLen);
   const binary = atob(padded);
   const bytes = new Uint8Array(binary.length);
   for (let i = 0; i < binary.length; i++) {
