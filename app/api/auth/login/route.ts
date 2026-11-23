@@ -23,7 +23,7 @@ export async function POST(req: Request) {
   try {
     initDb();
     const db = getDb();
-    const countRow = db.prepare("SELECT count(*) as count FROM employees").get() as { count: number } | undefined;
+    const countRow = db.prepare("SELECT count(*) as count FROM employees WHERE is_demo = 0").get() as { count: number } | undefined;
     if (!countRow || countRow.count === 0) {
       await ensureDemoData();
     }
