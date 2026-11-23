@@ -27,6 +27,9 @@ yarn-error.log*
 .env*.local
 .env
 
+# demo/staging employee database (never commit demo records)
+/data
+
 # vercel
 .vercel
 

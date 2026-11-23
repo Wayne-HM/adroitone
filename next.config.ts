@@ -13,6 +13,7 @@ const securityHeaders = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
+  serverExternalPackages: ["better-sqlite3"],
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },

@@ -104,6 +104,21 @@ export function Navbar() {
                 →
               </span>
             </Link>
+            <Link
+              href="/employee/login"
+              className={cn(
+                "group hidden items-center gap-2 rounded-full border border-white/15 px-5 py-2.5 text-sm font-medium text-white transition-all duration-300 hover:border-white/30 hover:bg-white/[0.04] sm:inline-flex",
+                scrolled ? "text-[0.82rem] px-4 py-2" : ""
+              )}
+            >
+              Employee login
+              <span
+                aria-hidden
+                className="transition-transform duration-300 group-hover:translate-x-0.5"
+              >
+                →
+              </span>
+            </Link>
             <button
               onClick={() => setOpen(true)}
               aria-label="Open menu"

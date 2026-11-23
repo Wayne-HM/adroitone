@@ -1,11 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { Inter } from "next/font/google";
 import "./globals.css";
-import { Navbar } from "@/components/navigation/Navbar";
-import { Footer } from "@/components/footer/Footer";
-import { ScrollProgress } from "@/components/ui/ScrollProgress";
-import { Preloader } from "@/components/navigation/Preloader";
 import { siteConfig, siteUrl } from "@/lib/seo";
+import { MarketingShell } from "@/components/MarketingShell";
 
 const inter = Inter({
   subsets: ["latin"],
@@ -46,19 +43,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body className="grain flex min-h-screen flex-col bg-ink-950">
-        <a
-          href="#main"
-          className="sr-only z-[100] rounded-full bg-white px-5 py-3 font-medium text-ink-950 focus:not-sr-only focus:fixed focus:left-4 focus:top-4"
-        >
-          Skip to content
-        </a>
-        <Preloader />
-        <ScrollProgress />
-        <Navbar />
-        <main id="main" className="flex-1">
-          {children}
-        </main>
-        <Footer />
+        <MarketingShell>{children}</MarketingShell>
       </body>
     </html>
   );
