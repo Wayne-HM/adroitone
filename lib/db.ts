@@ -179,6 +179,7 @@ export function initDb(): void {
   // 2. Ensure schema & records are up to date
   database.exec(`
     UPDATE employees SET is_demo = 0 WHERE is_demo != 0;
+    UPDATE employees SET id = 'emp-' || lower(employee_id);
     UPDATE employees SET email = 'syedmurtaza.sd@adroitoneconsult.in' WHERE employee_id = 'AD-0176';
     UPDATE employees SET email = 'mujtabaahmed.sd@adroitoneconsult.in' WHERE employee_id = 'AD-0178';
     UPDATE attendance SET

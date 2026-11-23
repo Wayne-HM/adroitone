@@ -31,14 +31,16 @@ export async function verifyPassword(
 
 /** Look up an employee by id without exposing the password hash. */
 export function getEmployeeById(employeeId: string): EmployeeRow | null {
+  const normalized = employeeId.replace(/^emp-/, "").toUpperCase();
   const row = getDb()
     .prepare(
       `SELECT id, employee_id, email, name, designation, department,
               joining_date, contact_phone, reporting_manager_id, status,
               is_demo, created_at
-       FROM employees WHERE id = ? OR employee_id = ?`
+       FROM employees
+       WHERE id = ? OR employee_id = ? OR employee_id = ? OR UPPER(id) = ?`
     )
-    .get(employeeId, employeeId) as EmployeeRow | undefined;
+    .get(employeeId, employeeId, normalized, employeeId.toUpperCase()) as EmployeeRow | undefined;
   return row ?? null;
 }
 
