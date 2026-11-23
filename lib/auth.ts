@@ -4,7 +4,7 @@ import {
   verifySessionTokenAsync,
   SESSION_COOKIE,
 } from "./session";
-import { getDb, type EmployeeRow } from "./db";
+import { getDb, initDb, type EmployeeRow } from "./db";
 
 /**
  * Authentication helpers that require the employee database (Node.js runtime).
@@ -115,6 +115,7 @@ export async function getCurrentEmployee(): Promise<SessionEmployee | null> {
   if (!token) return null;
   const employeeId = await verifySessionTokenAsync(token);
   if (!employeeId) return null;
+  initDb();
   return getEmployeeById(employeeId);
 }
 
