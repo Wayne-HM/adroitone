@@ -135,7 +135,6 @@ export function LoginForm({ callbackUrl }: { callbackUrl?: string | null }) {
                       "field pl-10 pr-4",
                       fieldErrors.identifier && "field-error"
                     )}
-                    placeholder="AD-0176 or name@adroitoneconsult.in"
                     disabled={loading}
                   />
                 </div>
@@ -252,9 +251,6 @@ export function LoginForm({ callbackUrl }: { callbackUrl?: string | null }) {
                   <p className="text-white/70 text-xs">
                     If an account matches <span className="text-cyan font-mono">{identifier}</span>, password reset instructions have been dispatched.
                   </p>
-                  <p className="text-white/40 text-[0.7rem] mt-2">
-                    Default temporary password: <span className="font-mono text-cyan">DemoPassword123!</span>
-                  </p>
                 </div>
               ) : (
                 <div className="space-y-4">
@@ -281,7 +277,6 @@ export function LoginForm({ callbackUrl }: { callbackUrl?: string | null }) {
                       value={identifier}
                       onChange={(e) => setIdentifier(e.target.value)}
                       className="field pl-10 pr-4"
-                      placeholder="name@adroitoneconsult.in"
                       disabled={loading}
                     />
                   </div>
