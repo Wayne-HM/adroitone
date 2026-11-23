@@ -1,28 +1,39 @@
 import Database from "better-sqlite3";
-import { resolve } from "node:path";
+import { resolve, dirname } from "node:path";
+import { copyFileSync, existsSync, mkdirSync } from "node:fs";
 
 /**
  * SQLite connection for the AdroitOne employee portal.
  *
- * This is a single-file, zero-config database intended for local development
- * and demo/staging use. It requires no database server.
- *
- * Production note: Vercel/serverless platforms do not allow persistent local
- * file writes. For production, replace this module with a PostgreSQL client
- * (e.g. @neondatabase/serverless or pg) and point DATABASE_URL at a managed
- * Postgres instance. The schema below is portable to Postgres with minor
- * type tweaks (TEXT -> TEXT, REAL -> REAL, INTEGER -> INTEGER).
- *
- * The database file lives outside the app bundle at data/adroitone.db and is
- * git-ignored so demo records never get committed to the repository.
+ * In local dev, reads/writes to data/adroitone.db.
+ * On Vercel / serverless (where /var/task is read-only), copies data/adroitone.db
+ * to /tmp/adroitone.db on first load so SQLite WAL mode can write freely.
  */
 
-const DB_PATH = resolve(process.cwd(), "data", "adroitone.db");
+const BUNDLED_DB_PATH = resolve(process.cwd(), "data", "adroitone.db");
+const DB_PATH = process.env.VERCEL
+  ? "/tmp/adroitone.db"
+  : resolve(process.cwd(), "data", "adroitone.db");
 
 let db: Database.Database | null = null;
 
 export function getDb(): Database.Database {
   if (db) return db;
+
+  const targetDir = dirname(DB_PATH);
+  if (!existsSync(targetDir)) {
+    mkdirSync(targetDir, { recursive: true });
+  }
+
+  // On Vercel, copy the pre-seeded database from the read-only build dir to /tmp if not yet present
+  if (process.env.VERCEL && !existsSync(DB_PATH) && existsSync(BUNDLED_DB_PATH)) {
+    try {
+      copyFileSync(BUNDLED_DB_PATH, DB_PATH);
+    } catch {
+      // Fallback: initDb will create tables
+    }
+  }
+
   db = new Database(DB_PATH);
   db.pragma("journal_mode = WAL");
   db.pragma("foreign_keys = ON");
