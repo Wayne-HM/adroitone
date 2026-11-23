@@ -215,8 +215,8 @@ export function LoginForm({ callbackUrl }: { callbackUrl?: string | null }) {
                   <span className="font-medium text-white/80">Employee Access</span>
                   <span className="text-[0.65rem] px-2 py-0.5 rounded-full bg-accent/20 text-accent font-medium">DEMO</span>
                 </div>
-                <div className="space-y-1.5 font-mono text-[0.72rem] text-white/50">
-                  <div className="flex items-center justify-between">
+                <div className="space-y-2 font-mono text-[0.72rem] text-white/50">
+                  <div className="flex items-center justify-between border-b border-white/[0.04] pb-1.5">
                     <span>ID: <button type="button" onClick={() => setIdentifier("AD-0176")} className="text-cyan hover:underline">AD-0176</button> <span className="text-white/40 font-sans">(Syed Murtaza)</span></span>
                     <button
                       type="button"
@@ -230,8 +230,19 @@ export function LoginForm({ callbackUrl }: { callbackUrl?: string | null }) {
                       Quick fill
                     </button>
                   </div>
-                  <div className="text-[0.7rem] text-white/40 truncate">
-                    Email: <span className="text-white/70">syedmurtaza.sd@demo.adroitoneconsult.in</span>
+                  <div className="flex items-center justify-between">
+                    <span>ID: <button type="button" onClick={() => setIdentifier("AD-0178")} className="text-cyan hover:underline">AD-0178</button> <span className="text-white/40 font-sans">(Mujtaba Ahmed)</span></span>
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setIdentifier("AD-0178");
+                        setPassword("DemoPassword123!");
+                        clearMessages();
+                      }}
+                      className="text-accent hover:underline font-sans text-xs"
+                    >
+                      Quick fill
+                    </button>
                   </div>
                   <div className="pt-1 text-[0.7rem] text-white/40">
                     Password: <span className="text-cyan">DemoPassword123!</span>

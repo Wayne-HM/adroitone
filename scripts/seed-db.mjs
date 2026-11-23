@@ -70,6 +70,17 @@ const EMPLOYEES = [
     reporting_manager_id: "AD-0102",
     status: "active",
   },
+  {
+    employee_id: "AD-0178",
+    email: "mujtabaahmed.sd@demo.adroitoneconsult.in",
+    name: "MUJTABA AHMED",
+    designation: "WEB DEVELOPER INTERN",
+    department: "SOFTWARE DEVELOPMENT",
+    joining_date: "2026-09-07",
+    contact_phone: "7207512378",
+    reporting_manager_id: "AD-0102",
+    status: "active",
+  },
 ];
 
 function generateAttendance(employeeId) {
@@ -110,10 +121,8 @@ function generateAttendance(employeeId) {
       } else if (dayOfWeek === 0) {
         // Sundays are holidays
       } else {
-        // Check-in between 09:45 and 10:10 (IST = UTC+05:30)
-        // Check-out between 16:50 and 17:10 (IST = UTC+05:30)
         const dayNum = parseInt(dateStr.slice(-2), 10);
-        const inMinuteOffset = (dayNum * 7) % 26; // 0 to 25 mins after 09:45 -> 09:45 to 10:10
+        const inMinuteOffset = (dayNum * 7) % 26;
         let inHour = 9;
         let inMin = 45 + inMinuteOffset;
         if (inMin >= 60) {
@@ -121,7 +130,7 @@ function generateAttendance(employeeId) {
           inMin = inMin - 60;
         }
 
-        const outMinuteOffset = (dayNum * 11) % 21; // 0 to 20 mins after 16:50 -> 16:50 to 17:10
+        const outMinuteOffset = (dayNum * 11) % 21;
         let outHour = 16;
         let outMin = 50 + outMinuteOffset;
         if (outMin >= 60) {
@@ -160,9 +169,7 @@ function generateAttendance(employeeId) {
 }
 
 async function seed() {
-  console.log("[seed] Removing old demo accounts (EMP-1001, EMP-1002, EMP-1003)...");
-  db.prepare(`DELETE FROM attendance WHERE employee_id IN ('EMP-1001', 'EMP-1002', 'EMP-1003')`).run();
-  db.prepare(`DELETE FROM employees WHERE employee_id IN ('EMP-1001', 'EMP-1002', 'EMP-1003')`).run();
+  console.log("[seed] Updating employees in database...");
 
   const insertEmp = db.prepare(`
     INSERT INTO employees
@@ -204,25 +211,31 @@ async function seed() {
     console.log(`[seed] Saved employee: ${emp.employee_id} - ${emp.name}`);
   }
 
-  console.log("[seed] Seeding attendance history for AD-0176 (SYED MURTAZA)...");
-  // Clear any existing attendance for AD-0176 so it's clean and exact
-  db.prepare(`DELETE FROM attendance WHERE employee_id = 'AD-0176'`).run();
-
   const insertAtt = db.prepare(`
     INSERT INTO attendance
       (id, employee_id, date, check_in, check_out, total_hours, status, created_at)
     VALUES (@id, @employee_id, @date, @check_in, @check_out, @total_hours, @status, @created_at)
+    ON CONFLICT(employee_id, date) DO UPDATE SET
+      check_in = excluded.check_in,
+      check_out = excluded.check_out,
+      total_hours = excluded.total_hours,
+      status = excluded.status
   `);
 
-  const attendanceRecords = generateAttendance("AD-0176");
-  const insertMany = db.transaction((rows) => {
-    for (const row of rows) {
-      insertAtt.run(row);
-    }
-  });
+  for (const emp of ["AD-0176", "AD-0178"]) {
+    console.log(`[seed] Seeding attendance history for ${emp}...`);
+    db.prepare(`DELETE FROM attendance WHERE employee_id = ?`).run(emp);
 
-  insertMany(attendanceRecords);
-  console.log(`[seed] Successfully seeded ${attendanceRecords.length} attendance records for AD-0176.`);
+    const attendanceRecords = generateAttendance(emp);
+    const insertMany = db.transaction((rows) => {
+      for (const row of rows) {
+        insertAtt.run(row);
+      }
+    });
+
+    insertMany(attendanceRecords);
+    console.log(`[seed] Successfully seeded ${attendanceRecords.length} attendance records for ${emp}.`);
+  }
 
   db.close();
 }

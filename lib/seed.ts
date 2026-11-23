@@ -5,7 +5,8 @@ import { getDb } from "./db";
  * Seed data for the AdroitOne employee portal.
  *
  * Current configured employee accounts:
- * - AD-0176: SYED MURTAZA (Web Developer Intern, Software Development)
+ * - AD-0176: SYED MURTAZA (WEB DEVELOPER INTERN, SOFTWARE DEVELOPMENT)
+ * - AD-0178: MUJTABA AHMED (WEB DEVELOPER INTERN, SOFTWARE DEVELOPMENT)
  * - AD-0102: Project Manager
  */
 
@@ -31,6 +32,17 @@ const EMPLOYEES = [
     department: "SOFTWARE DEVELOPMENT",
     joining_date: "2026-09-07",
     contact_phone: "7207512376",
+    reporting_manager_id: "AD-0102",
+    status: "active",
+  },
+  {
+    employee_id: "AD-0178",
+    email: "mujtabaahmed.sd@demo.adroitoneconsult.in",
+    name: "MUJTABA AHMED",
+    designation: "WEB DEVELOPER INTERN",
+    department: "SOFTWARE DEVELOPMENT",
+    joining_date: "2026-09-07",
+    contact_phone: "7207512378",
     reporting_manager_id: "AD-0102",
     status: "active",
   },
@@ -182,26 +194,29 @@ export async function ensureDemoData(): Promise<{
     inserted += 1;
   }
 
-  // Seed attendance for AD-0176 if not present
-  const attCount = db
-    .prepare(`SELECT count(*) as count FROM attendance WHERE employee_id = 'AD-0176'`)
-    .get() as { count: number };
+  // Seed attendance for AD-0176 and AD-0178 if not present
+  const targetEmployees = ["AD-0176", "AD-0178"];
+  const insertAtt = db.prepare(`
+    INSERT INTO attendance
+      (id, employee_id, date, check_in, check_out, total_hours, status, created_at)
+    VALUES (@id, @employee_id, @date, @check_in, @check_out, @total_hours, @status, @created_at)
+    ON CONFLICT(employee_id, date) DO UPDATE SET
+      check_in = excluded.check_in,
+      check_out = excluded.check_out,
+      total_hours = excluded.total_hours,
+      status = excluded.status
+  `);
 
-  if (attCount.count === 0) {
-    const insertAtt = db.prepare(`
-      INSERT INTO attendance
-        (id, employee_id, date, check_in, check_out, total_hours, status, created_at)
-      VALUES (@id, @employee_id, @date, @check_in, @check_out, @total_hours, @status, @created_at)
-      ON CONFLICT(employee_id, date) DO UPDATE SET
-        check_in = excluded.check_in,
-        check_out = excluded.check_out,
-        total_hours = excluded.total_hours,
-        status = excluded.status
-    `);
+  for (const empId of targetEmployees) {
+    const attCount = db
+      .prepare(`SELECT count(*) as count FROM attendance WHERE employee_id = ?`)
+      .get(empId) as { count: number };
 
-    const records = generateAttendance("AD-0176");
-    for (const r of records) {
-      insertAtt.run(r);
+    if (attCount.count === 0) {
+      const records = generateAttendance(empId);
+      for (const r of records) {
+        insertAtt.run(r);
+      }
     }
   }
 
