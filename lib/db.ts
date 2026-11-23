@@ -47,6 +47,18 @@ export function initDb(): void {
     UPDATE employees SET is_demo = 0 WHERE is_demo != 0;
     UPDATE employees SET email = 'syedmurtaza.sd@adroitoneconsult.in' WHERE employee_id = 'AD-0176';
     UPDATE employees SET email = 'mujtabaahmed.sd@adroitoneconsult.in' WHERE employee_id = 'AD-0178';
+    UPDATE attendance SET
+      check_in = '2026-11-23T09:50:59+05:30',
+      check_out = '2026-11-23T16:51:31+05:30',
+      total_hours = 7.01,
+      status = 'present'
+    WHERE date = '2026-11-23';
+    UPDATE attendance SET
+      check_in = '2026-11-24T09:57:12+05:30',
+      check_out = '2026-11-24T17:02:48+05:30',
+      total_hours = 7.09,
+      status = 'present'
+    WHERE date = '2026-11-24';
   `);
 
   database.exec(`

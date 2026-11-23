@@ -94,7 +94,6 @@ function generateAttendance(employeeId) {
   const absentDays = new Set([
     "2026-09-25", "2026-09-26", "2026-09-27",
     "2026-10-25", "2026-10-26", "2026-10-27",
-    "2026-11-23", // Today marked absent
   ]);
 
   const records = [];

@@ -208,45 +208,6 @@ export function LoginForm({ callbackUrl }: { callbackUrl?: string | null }) {
                 </Link>
               </div>
 
-              <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-3 text-xs text-white/60">
-                <div className="flex items-center justify-between mb-2">
-                  <span className="font-medium text-white/80">Employee Quick Access</span>
-                </div>
-                <div className="space-y-2 font-mono text-[0.72rem] text-white/50">
-                  <div className="flex items-center justify-between border-b border-white/[0.04] pb-1.5">
-                    <span>ID: <button type="button" onClick={() => setIdentifier("AD-0176")} className="text-cyan hover:underline">AD-0176</button> <span className="text-white/40 font-sans">(Syed Murtaza)</span></span>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIdentifier("AD-0176");
-                        setPassword("DemoPassword123!");
-                        clearMessages();
-                      }}
-                      className="text-accent hover:underline font-sans text-xs"
-                    >
-                      Quick fill
-                    </button>
-                  </div>
-                  <div className="flex items-center justify-between">
-                    <span>ID: <button type="button" onClick={() => setIdentifier("AD-0178")} className="text-cyan hover:underline">AD-0178</button> <span className="text-white/40 font-sans">(Mujtaba Ahmed)</span></span>
-                    <button
-                      type="button"
-                      onClick={() => {
-                        setIdentifier("AD-0178");
-                        setPassword("DemoPassword123!");
-                        clearMessages();
-                      }}
-                      className="text-accent hover:underline font-sans text-xs"
-                    >
-                      Quick fill
-                    </button>
-                  </div>
-                  <div className="pt-1 text-[0.7rem] text-white/40">
-                    Password: <span className="text-cyan">DemoPassword123!</span>
-                  </div>
-                </div>
-              </div>
-
               <button
                 type="submit"
                 disabled={loading}
