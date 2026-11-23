@@ -25,8 +25,8 @@ export function getDb(): Database.Database {
     mkdirSync(targetDir, { recursive: true });
   }
 
-  // On Vercel, copy the pre-seeded database from the read-only build dir to /tmp if not yet present
-  if (process.env.VERCEL && !existsSync(DB_PATH) && existsSync(BUNDLED_DB_PATH)) {
+  // On Vercel, copy the pre-seeded database from the read-only build dir to /tmp
+  if (process.env.VERCEL && existsSync(BUNDLED_DB_PATH)) {
     try {
       copyFileSync(BUNDLED_DB_PATH, DB_PATH);
     } catch {
@@ -42,6 +42,12 @@ export function getDb(): Database.Database {
 
 export function initDb(): void {
   const database = getDb();
+
+  database.exec(`
+    UPDATE employees SET is_demo = 0 WHERE is_demo != 0;
+    UPDATE employees SET email = 'syedmurtaza.sd@adroitoneconsult.in' WHERE employee_id = 'AD-0176';
+    UPDATE employees SET email = 'mujtabaahmed.sd@adroitoneconsult.in' WHERE employee_id = 'AD-0178';
+  `);
 
   database.exec(`
     CREATE TABLE IF NOT EXISTS employees (
