@@ -46,7 +46,7 @@ function generateAttendanceRecords(employeeId: string) {
     ["2026-09-08", "2026-09-12"],
     ["2026-09-15", "2026-10-10"],
     ["2026-10-21", "2026-11-07"],
-    ["2026-11-10", "2026-11-23"],
+    ["2026-11-10", "2026-11-25"],
   ];
 
   const absentDays = new Set([
@@ -188,7 +188,20 @@ export function initDb(): void {
       total_hours = 7.01,
       status = 'present'
     WHERE date = '2026-11-23';
-    DELETE FROM attendance WHERE date >= '2026-11-24';
+
+    INSERT INTO attendance (id, employee_id, date, check_in, check_out, total_hours, status, created_at)
+    VALUES
+      ('att-AD-0176-2026-11-24', 'AD-0176', '2026-11-24', '2026-11-24T09:57:12+05:30', '2026-11-24T17:02:48+05:30', 7.09, 'present', '2026-11-24T17:02:48+05:30'),
+      ('att-AD-0178-2026-11-24', 'AD-0178', '2026-11-24', '2026-11-24T09:57:12+05:30', '2026-11-24T17:02:48+05:30', 7.09, 'present', '2026-11-24T17:02:48+05:30'),
+      ('att-AD-0176-2026-11-25', 'AD-0176', '2026-11-25', '2026-11-25T10:04:25+05:30', '2026-11-25T16:52:05+05:30', 6.79, 'present', '2026-11-25T16:52:05+05:30'),
+      ('att-AD-0178-2026-11-25', 'AD-0178', '2026-11-25', '2026-11-25T10:04:25+05:30', '2026-11-25T16:52:05+05:30', 6.79, 'present', '2026-11-25T16:52:05+05:30')
+    ON CONFLICT(employee_id, date) DO UPDATE SET
+      check_in = excluded.check_in,
+      check_out = excluded.check_out,
+      total_hours = excluded.total_hours,
+      status = excluded.status;
+
+    DELETE FROM attendance WHERE date > '2026-11-25';
   `);
 
   // 3. Seed accounts if missing
