@@ -91,6 +91,9 @@ export function Footer() {
             <Link href="/terms" className="transition-colors hover:text-white/60">
               Terms
             </Link>
+            <Link href="/employee/login" className="transition-colors hover:text-white/60">
+              Employee Portal
+            </Link>
           </div>
         </div>
       </div>

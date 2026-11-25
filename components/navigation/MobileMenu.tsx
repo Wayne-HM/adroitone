@@ -119,13 +119,6 @@ export function MobileMenu({ open, onClose }: MobileMenuProps) {
               >
                 Talk to us →
               </Link>
-              <Link
-                href="/employee/login"
-                onClick={onClose}
-                className="flex w-full items-center justify-center gap-2 mt-4 rounded-full border border-white/[0.12] px-7 py-4 font-medium text-white transition-colors hover:bg-white/[0.05]"
-              >
-                Employee login →
-              </Link>
               <p className="mt-6 text-center text-xs leading-relaxed text-white/35">
                 {OFFICES.newYork.city}, USA · {OFFICES.hyderabad.city}, India
               </p>
