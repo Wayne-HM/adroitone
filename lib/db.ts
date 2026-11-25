@@ -54,6 +54,8 @@ function generateAttendanceRecords(employeeId: string) {
     "2026-10-25", "2026-10-26", "2026-10-27",
   ]);
 
+  const identicalDates = new Set(["2026-09-08", "2026-10-06", "2026-11-12"]);
+
   const records: Array<{
     id: string;
     employee_id: string;
@@ -88,27 +90,50 @@ function generateAttendanceRecords(employeeId: string) {
         // Sundays are holidays
       } else {
         const dayNum = parseInt(dateStr.slice(-2), 10);
-        const inMinuteOffset = (dayNum * 7) % 26;
+        let inMinuteOffset = (dayNum * 7) % 26;
+        let outMinuteOffset = (dayNum * 11) % 21;
+        let inSec = (dayNum * 13) % 60;
+        let outSec = (dayNum * 17) % 60;
+
+        // If AD-0178 and not one of the identical days, vary by 1 to 8 minutes
+        if (employeeId === "AD-0178" && !identicalDates.has(dateStr)) {
+          const deltaInMins = ((dayNum * 3 + 5) % 7) + 2; // 2 to 8 mins
+          const deltaInSign = (dayNum % 2 === 0) ? 1 : -1;
+          inMinuteOffset += deltaInSign * deltaInMins;
+
+          const deltaOutMins = ((dayNum * 5 + 3) % 7) + 2; // 2 to 8 mins
+          const deltaOutSign = (dayNum % 3 === 0) ? -1 : 1;
+          outMinuteOffset += deltaOutSign * deltaOutMins;
+
+          inSec = (inSec + 23) % 60;
+          outSec = (outSec + 37) % 60;
+        }
+
         let inHour = 9;
         let inMin = 45 + inMinuteOffset;
-        if (inMin >= 60) {
-          inHour = 10;
-          inMin = inMin - 60;
+        while (inMin >= 60) {
+          inHour += 1;
+          inMin -= 60;
+        }
+        while (inMin < 0) {
+          inHour -= 1;
+          inMin += 60;
         }
 
-        const outMinuteOffset = (dayNum * 11) % 21;
         let outHour = 16;
         let outMin = 50 + outMinuteOffset;
-        if (outMin >= 60) {
-          outHour = 17;
-          outMin = outMin - 60;
+        while (outMin >= 60) {
+          outHour += 1;
+          outMin -= 60;
+        }
+        while (outMin < 0) {
+          outHour -= 1;
+          outMin += 60;
         }
 
-        const inSec = (dayNum * 13) % 60;
-        const outSec = (dayNum * 17) % 60;
-
-        const checkInIso = `${dateStr}T${String(inHour).padStart(2, "0")}:${String(inMin).padStart(2, "0")}:${String(inSec).padStart(2, "0")}+05:30`;
-        const checkOutIso = `${dateStr}T${String(outHour).padStart(2, "0")}:${String(outMin).padStart(2, "0")}:${String(outSec).padStart(2, "0")}+05:30`;
+        const pad = (n: number) => String(n).padStart(2, "0");
+        const checkInIso = `${dateStr}T${pad(inHour)}:${pad(inMin)}:${pad(inSec)}+05:30`;
+        const checkOutIso = `${dateStr}T${pad(outHour)}:${pad(outMin)}:${pad(outSec)}+05:30`;
 
         const totalHours =
           Math.round(
@@ -187,14 +212,21 @@ export function initDb(): void {
       check_out = '2026-11-23T16:51:31+05:30',
       total_hours = 7.01,
       status = 'present'
-    WHERE date = '2026-11-23';
+    WHERE date = '2026-11-23' AND employee_id = 'AD-0176';
+
+    UPDATE attendance SET
+      check_in = '2026-11-23T09:44:22+05:30',
+      check_out = '2026-11-23T16:59:08+05:30',
+      total_hours = 7.25,
+      status = 'present'
+    WHERE date = '2026-11-23' AND employee_id = 'AD-0178';
 
     INSERT INTO attendance (id, employee_id, date, check_in, check_out, total_hours, status, created_at)
     VALUES
       ('att-AD-0176-2026-11-24', 'AD-0176', '2026-11-24', '2026-11-24T09:57:12+05:30', '2026-11-24T17:02:48+05:30', 7.09, 'present', '2026-11-24T17:02:48+05:30'),
-      ('att-AD-0178-2026-11-24', 'AD-0178', '2026-11-24', '2026-11-24T09:57:12+05:30', '2026-11-24T17:02:48+05:30', 7.09, 'present', '2026-11-24T17:02:48+05:30'),
+      ('att-AD-0178-2026-11-24', 'AD-0178', '2026-11-24', '2026-11-24T09:59:35+05:30', '2026-11-24T16:56:25+05:30', 6.95, 'present', '2026-11-24T16:56:25+05:30'),
       ('att-AD-0176-2026-11-25', 'AD-0176', '2026-11-25', '2026-11-25T10:04:25+05:30', '2026-11-25T16:52:05+05:30', 6.79, 'present', '2026-11-25T16:52:05+05:30'),
-      ('att-AD-0178-2026-11-25', 'AD-0178', '2026-11-25', '2026-11-25T10:04:25+05:30', '2026-11-25T16:52:05+05:30', 6.79, 'present', '2026-11-25T16:52:05+05:30')
+      ('att-AD-0178-2026-11-25', 'AD-0178', '2026-11-25', '2026-11-25T09:59:48+05:30', '2026-11-25T16:56:42+05:30', 6.95, 'present', '2026-11-25T16:56:42+05:30')
     ON CONFLICT(employee_id, date) DO UPDATE SET
       check_in = excluded.check_in,
       check_out = excluded.check_out,

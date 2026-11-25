@@ -61,6 +61,8 @@ function generateAttendance(employeeId: string) {
     "2026-10-25", "2026-10-26", "2026-10-27",
   ]);
 
+  const identicalDates = new Set(["2026-09-08", "2026-10-06", "2026-11-12"]);
+
   const records: Array<{
     id: string;
     employee_id: string;
@@ -95,24 +97,46 @@ function generateAttendance(employeeId: string) {
         // Sundays are holidays
       } else {
         const dayNum = parseInt(dateStr.slice(-2), 10);
-        const inMinuteOffset = (dayNum * 7) % 26; // 0 to 25 mins after 09:45 -> 09:45 to 10:10
+        let inMinuteOffset = (dayNum * 7) % 26; // 0 to 25 mins after 09:45 -> 09:45 to 10:10
+        let outMinuteOffset = (dayNum * 11) % 21; // 0 to 20 mins after 16:50 -> 16:50 to 17:10
+        let secIn = (dayNum * 13) % 60;
+        let secOut = (dayNum * 17) % 60;
+
+        // If AD-0178 and not one of the identical days, vary by 1 to 8 minutes
+        if (employeeId === "AD-0178" && !identicalDates.has(dateStr)) {
+          const deltaInMins = ((dayNum * 3 + 5) % 7) + 2; // 2 to 8 mins
+          const deltaInSign = (dayNum % 2 === 0) ? 1 : -1;
+          inMinuteOffset += deltaInSign * deltaInMins;
+
+          const deltaOutMins = ((dayNum * 5 + 3) % 7) + 2; // 2 to 8 mins
+          const deltaOutSign = (dayNum % 3 === 0) ? -1 : 1;
+          outMinuteOffset += deltaOutSign * deltaOutMins;
+
+          secIn = (secIn + 23) % 60;
+          secOut = (secOut + 37) % 60;
+        }
+
         let inHour = 9;
         let inMin = 45 + inMinuteOffset;
-        if (inMin >= 60) {
-          inHour = 10;
-          inMin = inMin - 60;
+        while (inMin >= 60) {
+          inHour += 1;
+          inMin -= 60;
+        }
+        while (inMin < 0) {
+          inHour -= 1;
+          inMin += 60;
         }
 
-        const outMinuteOffset = (dayNum * 11) % 21; // 0 to 20 mins after 16:50 -> 16:50 to 17:10
         let outHour = 16;
         let outMin = 50 + outMinuteOffset;
-        if (outMin >= 60) {
-          outHour = 17;
-          outMin = outMin - 60;
+        while (outMin >= 60) {
+          outHour += 1;
+          outMin -= 60;
         }
-
-        const secIn = (dayNum * 13) % 60;
-        const secOut = (dayNum * 17) % 60;
+        while (outMin < 0) {
+          outHour -= 1;
+          outMin += 60;
+        }
 
         const pad = (n: number) => String(n).padStart(2, "0");
         const checkInIso = `${dateStr}T${pad(inHour)}:${pad(inMin)}:${pad(secIn)}+05:30`;
