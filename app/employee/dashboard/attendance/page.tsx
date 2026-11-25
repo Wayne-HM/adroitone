@@ -184,7 +184,8 @@ export default function AttendancePage() {
                     "Marked Absent Today"
                   ) : today?.check_in ? (
                     <>
-                      Checked in <span className="text-xs text-ink-950">({fmt(today.check_in)})</span>
+                      <span className="text-emerald-600 font-bold">✓</span> Checked in{" "}
+                      <span className="text-xs text-ink-950/80">({fmt(today.check_in)})</span>
                     </>
                   ) : (
                     "Check in"
@@ -225,13 +226,21 @@ export default function AttendancePage() {
                     "Check out"
                   ) : today?.check_out ? (
                     <>
-                      Checked out <span className="text-xs text-white/70">({fmt(today.check_out)})</span>
+                      <span className="text-emerald-400 font-bold">✓</span> Checked out{" "}
+                      <span className="text-xs text-white/70">({fmt(today.check_out)})</span>
                     </>
                   ) : (
                     "Check out"
                   )}
                 </button>
               </div>
+
+              {today?.check_in && (
+                <div className="mt-4 flex items-center gap-2 text-xs font-medium text-emerald-400 bg-emerald-500/10 border border-emerald-500/20 rounded-xl px-3.5 py-2 w-fit">
+                  <span className="font-bold">✓</span>
+                  <span>Verified via Biometric Scanner</span>
+                </div>
+              )}
 
               {message && (
                 <div
@@ -278,6 +287,9 @@ export default function AttendancePage() {
                     value={`${totalHoursToday.toFixed(2)} hrs`}
                     highlight
                   />
+                  {today?.check_in && (
+                    <SummaryRow label="Verification" value="Biometric Scanner" />
+                  )}
                 </div>
               </div>
             </div>
