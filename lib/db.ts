@@ -46,13 +46,14 @@ function generateAttendanceRecords(employeeId: string) {
     ["2026-09-08", "2026-09-12"],
     ["2026-09-15", "2026-10-10"],
     ["2026-10-21", "2026-11-07"],
-    ["2026-11-10", "2026-11-26"],
+    ["2026-11-10", "2026-11-27"],
   ];
 
   const absentDays = new Set([
     "2026-09-25", "2026-09-26", "2026-09-27",
     "2026-10-25", "2026-10-26", "2026-10-27",
     "2026-11-26",
+    "2026-11-27",
   ]);
 
   const identicalDates = new Set(["2026-09-08", "2026-10-06", "2026-11-12"]);
@@ -229,14 +230,16 @@ export function initDb(): void {
       ('att-AD-0176-2026-11-25', 'AD-0176', '2026-11-25', '2026-11-25T10:04:25+05:30', '2026-11-25T16:52:05+05:30', 6.79, 'present', '2026-11-25T16:52:05+05:30'),
       ('att-AD-0178-2026-11-25', 'AD-0178', '2026-11-25', '2026-11-25T09:59:48+05:30', '2026-11-25T16:56:42+05:30', 6.95, 'present', '2026-11-25T16:56:42+05:30'),
       ('att-AD-0176-2026-11-26', 'AD-0176', '2026-11-26', NULL, NULL, 0, 'absent', '2026-11-26T18:00:00+05:30'),
-      ('att-AD-0178-2026-11-26', 'AD-0178', '2026-11-26', NULL, NULL, 0, 'absent', '2026-11-26T18:00:00+05:30')
+      ('att-AD-0178-2026-11-26', 'AD-0178', '2026-11-26', NULL, NULL, 0, 'absent', '2026-11-26T18:00:00+05:30'),
+      ('att-AD-0176-2026-11-27', 'AD-0176', '2026-11-27', NULL, NULL, 0, 'absent', '2026-11-27T18:00:00+05:30'),
+      ('att-AD-0178-2026-11-27', 'AD-0178', '2026-11-27', NULL, NULL, 0, 'absent', '2026-11-27T18:00:00+05:30')
     ON CONFLICT(employee_id, date) DO UPDATE SET
       check_in = excluded.check_in,
       check_out = excluded.check_out,
       total_hours = excluded.total_hours,
       status = excluded.status;
 
-    DELETE FROM attendance WHERE date > '2026-11-26';
+    DELETE FROM attendance WHERE date > '2026-11-27';
   `);
 
   // 3. Seed accounts if missing
